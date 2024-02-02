@@ -4,5 +4,5 @@ import com.google.gson.annotations.SerializedName
 
 data class TokenRequest(
     @SerializedName("token")
-    val token : String
+    val token : String?
 )

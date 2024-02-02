@@ -1,6 +1,7 @@
 package com.example.a2024solutionchallenge
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -23,9 +24,7 @@ import com.google.android.gms.tasks.Task
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import okhttp3.FormBody
-import okhttp3.OkHttpClient
-import okhttp3.RequestBody
+import okhttp3.*
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
@@ -42,6 +41,8 @@ class LoginActivity : AppCompatActivity() {
     private var userEmail = ""
     //데이터 받아오기 준비
     private var isReady = false
+
+    private lateinit var userInfo : LoginGoogleResponse
 
     private val CLIENT_WEB_ID_KEY = BuildConfig.client_web_id_key
     private val CLIENT_WEB_SECRET_KEY = BuildConfig.client_web_secret_key
@@ -78,38 +79,27 @@ class LoginActivity : AppCompatActivity() {
             //.client(client) 이걸 통해 통신 오류 log찍기 가능
             .build()
         val service = retrofit.create(MioInterface::class.java)*/
-        val call = RetrofitServerConnect.service
-        val saveSharedPreferenceGoogleLogin = SaveSharedPreferenceGoogleLogin()
 
-        CoroutineScope(Dispatchers.IO).launch {
-            call.addUserInfoData(userInfoToken).enqueue(object : retrofit2.Callback<LoginResponsesData> {
-                override fun onResponse(
-                    call: retrofit2.Call<LoginResponsesData>,
-                    response: retrofit2.Response<LoginResponsesData?>
-                ) {
-                    if (response.isSuccessful) {
-                        val builder =  OkHttpClient.Builder()
-                            .connectTimeout(1, TimeUnit.SECONDS)
-                            .readTimeout(30, TimeUnit.SECONDS)
-                            .writeTimeout(15, TimeUnit.SECONDS)
-                            .addInterceptor(HeaderInterceptor(response.body()!!.accessToken))
-                        intent.apply {
-                            putExtra("accessToken", saveSharedPreferenceGoogleLogin.setToken(this@LoginActivity, response.body()!!.accessToken).toString())
-                            putExtra("expireDate", saveSharedPreferenceGoogleLogin.setExpireDate(this@LoginActivity, response.body()!!.accessTokenExpiresIn.toString()).toString())
-                        }
-                        builder.build()
-                        println(response.body()!!.accessTokenExpiresIn.toString())
-
-
-                    } else {
-                        println("fail")
+        //Todo 회원가입
+        /*Retrofit2Generator.create(this@LoginActivity).addUserInfoData(userInfoToken).enqueue(object : retrofit2.Callback<LoginResponsesData> {
+            override fun onResponse(
+                call: retrofit2.Call<LoginResponsesData>,
+                response: retrofit2.Response<LoginResponsesData?>
+            ) {
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        saveLoginData(it)
                     }
+
+                    println(response.body()!!.accessTokenExpiresIn.toString())
+                } else {
+                    println("fail")
                 }
-                override fun onFailure(call: retrofit2.Call<LoginResponsesData>, t: Throwable) {
-                    println("실패" + t.message.toString())
-                }
-            })
-        }
+            }
+            override fun onFailure(call: retrofit2.Call<LoginResponsesData>, t: Throwable) {
+                println("실패" + t.message.toString())
+            }
+        })*/
 
         /*val s = service.addUserInfoData(userInfoToken).execute().code()
         println(s)*/
@@ -142,14 +132,22 @@ class LoginActivity : AppCompatActivity() {
             val account = completedTask.getResult(ApiException::class.java)
             val email = account?.email.toString()
             val authCode = account.serverAuthCode
-            val saveSharedPreferenceGoogleLogin = SaveSharedPreferenceGoogleLogin()
+            val sharedPref = getSharedPreferences("TokenData", Context.MODE_PRIVATE)
 
             userEmail = email
 
-            //회원가입과 함께 새로운 계정 정보 저장
-            if (saveSharedPreferenceGoogleLogin.getUserEMAIL(this@LoginActivity)!!.isEmpty()) {
-                intent.apply {
+            //회원가입과 함께 새로운 계정 정보 저장val newAccessToken = sharedPreferences.getString("accessToken", "") ?: ""
+            //
+            val checkEmail = sharedPref.getString("email", "") ?: ""
+            if (checkEmail.isEmpty()) {
+               /* intent.apply {
                     putExtra("email", saveSharedPreferenceGoogleLogin.setUserEMAIL(this@LoginActivity, email).toString())
+                }
+                Todo 이메일 세팅 필요하나?
+
+                */
+                with(sharedPref.edit()) {
+                    putString("email", userEmail)
                 }
 
                 startActivity(intent)
@@ -201,11 +199,11 @@ class LoginActivity : AppCompatActivity() {
 
         CoroutineScope(Dispatchers.IO).launch {
             client.newCall(request).enqueue(object : Callback {
-                override fun onFailure(call: Call, e: IOException) {
+                override fun onFailure(call: okhttp3.Call, e: IOException) {
                     print("Failed")
                 }
 
-                override fun onResponse(call: Call, response: Response) {
+                override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
                     try {
                         val jsonObject = JSONObject(response.body!!.string())
                         val message = jsonObject.keys() //.toString(5)
@@ -213,8 +211,9 @@ class LoginActivity : AppCompatActivity() {
                         //json파일 키와 벨류를 잠시담는 변수
                         val tempKey = ArrayList<String>()
                         val tempValue = ArrayList<String>()
+
                         //정리한번
-                        user_info.clear()
+                        userInfo = LoginGoogleResponse("", -1, "", "", "")
 
                         while (message.hasNext()) {
                             val s = message.next().toString()
@@ -228,19 +227,18 @@ class LoginActivity : AppCompatActivity() {
                             println(tempKey[i] + "/" + jsonObject.getString(tempKey[i]))
                         }
 
-                        user_info.add(LoginGoogleResponse(tempValue[0], tempValue[1].toInt(), tempValue[2], tempValue[3], tempValue[4]))
-                        currentUser = user_info[0]
-                        println(message)
-                        println(user_info[0].id_token)
+                        userInfo = (LoginGoogleResponse(tempValue[0], tempValue[1].toInt(), tempValue[2], tempValue[3], tempValue[4]))
+                        //currentUser = userInfo.id_token
+                        //println(message)
+                        println(userInfo.id_token)
                         //createClipData(user_info[0].id_token)
-                        signInCheck(TokenRequest(currentUser.id_token))
+                        signInCheck(TokenRequest(userInfo.id_token))
                         tempKey.clear()
                         tempValue.clear()
                     } catch (e: JSONException) {
                         e.printStackTrace()
                     }
                 }
-
             })
         }
     }
@@ -265,12 +263,12 @@ class LoginActivity : AppCompatActivity() {
             .build()
 
         client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
+            override fun onFailure(call: okhttp3.Call, e: IOException) {
                 // 실패 시 처리
                 Log.e("Refresh Token", "Failed to refresh access token")
             }
 
-            override fun onResponse(call: Call, response: Response) {
+            override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
                 if (response.isSuccessful) {
                     val jsonResponse = JSONObject(response.body!!.string())
                     val newAccessToken = jsonResponse.getString("access_token")
@@ -284,5 +282,16 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
         })
+    }
+
+    private fun saveLoginData(data: LoginResponsesData) {
+        val sharedPref = getSharedPreferences("TokenData", Context.MODE_PRIVATE)
+        with(sharedPref.edit()) {
+            putString("grantType", data.grantType)
+            putString("accessToken", data.accessToken)
+            putString("refreshToken", data.refreshToken)
+            putLong("accessTokenExpiresIn", data.accessTokenExpiresIn)
+            apply() // 비동기적으로 데이터를 저장
+        }
     }
 }
