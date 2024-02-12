@@ -1,6 +1,9 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'com.google.gms.google-services'
+    id 'kotlin-parcelize'
+    id 'kotlin-kapt'
 }
 
 Properties properties = new Properties()
@@ -64,6 +67,10 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.6.0'
     //통신 로그
     implementation 'com.squareup.okhttp3:logging-interceptor:3.11.0'
+
+    //glide
+    implementation("com.github.bumptech.glide:glide:4.14.2")
+    kapt("com.github.bumptech.glide:compiler:4.14.2")
 
 
 

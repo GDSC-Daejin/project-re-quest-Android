@@ -5,7 +5,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.a2024solutionchallenge.R
+import com.example.a2024solutionchallenge.adapter.CommunityAdapter
+import com.example.a2024solutionchallenge.data.PostData
 import com.example.a2024solutionchallenge.databinding.FragmentHomeBinding
 
 // TODO: Rename parameter arguments, choose names that match
@@ -24,6 +27,8 @@ class HomeFragment : Fragment() {
     private var param2: String? = null
 
     private lateinit var binding : FragmentHomeBinding
+    private lateinit var adapter : CommunityAdapter
+    private var itemList : ArrayList<PostData> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,9 +45,28 @@ class HomeFragment : Fragment() {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
 
-
         return binding.root
     }
+
+    private fun setData() {
+        /*itemList.add(practiceData("a", false))
+        itemList.add(practiceData("b", false))
+        itemList.add(practiceData("c", false))*/
+    }
+
+
+    private fun initRecyclerView() {
+        setData()
+        adapter = CommunityAdapter()
+        adapter.itemData = itemList
+        binding.fhRv.adapter = adapter
+        binding.fhRv.setHasFixedSize(true)
+        binding.fhRv.layoutManager = LinearLayoutManager(requireContext())
+        /*mBinding.chattingRv.adapter = adapter
+         mBinding.chattingRv.setHasFixedSize(true)
+         mBinding.chattingRv.layoutManager = manager*/
+    }
+
 
     companion object {
         /**

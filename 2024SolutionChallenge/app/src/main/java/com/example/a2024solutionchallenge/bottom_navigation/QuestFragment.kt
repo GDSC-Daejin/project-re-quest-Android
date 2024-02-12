@@ -5,7 +5,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.a2024solutionchallenge.R
+import com.example.a2024solutionchallenge.adapter.CommunityAdapter
+import com.example.a2024solutionchallenge.adapter.QuestAdapter
+import com.example.a2024solutionchallenge.data.QuestData
+import com.example.a2024solutionchallenge.databinding.FragmentQuestBinding
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -22,6 +27,9 @@ class QuestFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+    private lateinit var binding : FragmentQuestBinding
+    private lateinit var adapter : QuestAdapter
+    private var questItemList = ArrayList<QuestData>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -34,8 +42,30 @@ class QuestFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_quest, container, false)
+        binding = FragmentQuestBinding.inflate(inflater, container, false)
+
+
+
+        return binding.root
+    }
+
+    private fun setData() {
+        /*itemList.add(practiceData("a", false))
+        itemList.add(practiceData("b", false))
+        itemList.add(practiceData("c", false))*/
+    }
+
+
+    private fun initRecyclerView() {
+        setData()
+        adapter = QuestAdapter()
+        adapter.itemData = questItemList
+        binding.questRv.adapter = adapter
+        binding.questRv.setHasFixedSize(true)
+        binding.questRv.layoutManager = LinearLayoutManager(requireContext())
+        /*mBinding.chattingRv.adapter = adapter
+         mBinding.chattingRv.setHasFixedSize(true)
+         mBinding.chattingRv.layoutManager = manager*/
     }
 
     companion object {
