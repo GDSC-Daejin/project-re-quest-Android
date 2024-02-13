@@ -5,7 +5,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.a2024solutionchallenge.R
+import com.example.a2024solutionchallenge.adapter.AchievementAdapter
+import com.example.a2024solutionchallenge.adapter.CommunityAdapter
+import com.example.a2024solutionchallenge.data.AchievementData
+import com.example.a2024solutionchallenge.data.PostData
 import com.example.a2024solutionchallenge.databinding.FragmentAchievementsBinding
 
 // TODO: Rename parameter arguments, choose names that match
@@ -25,6 +30,8 @@ class AchievementsFragment : Fragment() {
 
     private lateinit var binding : FragmentAchievementsBinding
     //private lateinit var adapter :
+    private lateinit var adapter : AchievementAdapter
+    private var itemList : ArrayList<AchievementData> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +48,28 @@ class AchievementsFragment : Fragment() {
         binding = FragmentAchievementsBinding.inflate(inflater, container, false)
 
 
+
+
         return binding.root
+    }
+
+    private fun setData() {
+        /*itemList.add(practiceData("a", false))
+        itemList.add(practiceData("b", false))
+        itemList.add(practiceData("c", false))*/
+    }
+
+
+    private fun initRecyclerView() {
+        setData()
+        adapter = AchievementAdapter()
+        adapter.itemData = itemList
+        binding.achievementRv.adapter = adapter
+        binding.achievementRv.setHasFixedSize(true)
+        binding.achievementRv.layoutManager = LinearLayoutManager(requireContext())
+        /*mBinding.chattingRv.adapter = adapter
+         mBinding.chattingRv.setHasFixedSize(true)
+         mBinding.chattingRv.layoutManager = manager*/
     }
 
     companion object {

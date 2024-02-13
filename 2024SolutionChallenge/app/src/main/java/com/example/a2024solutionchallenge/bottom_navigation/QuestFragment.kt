@@ -44,7 +44,7 @@ class QuestFragment : Fragment() {
     ): View? {
         binding = FragmentQuestBinding.inflate(inflater, container, false)
 
-
+        initRecyclerView()
 
         return binding.root
     }

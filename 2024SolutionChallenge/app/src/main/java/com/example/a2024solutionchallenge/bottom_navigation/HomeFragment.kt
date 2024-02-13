@@ -44,6 +44,7 @@ class HomeFragment : Fragment() {
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
+        initRecyclerView()
 
         return binding.root
     }
