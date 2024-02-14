@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.GridLayoutManager
 import com.example.a2024solutionchallenge.R
 import com.example.a2024solutionchallenge.databinding.FragmentAccountBinding
 import com.example.a2024solutionchallenge.databinding.FragmentAchievementsBinding
@@ -25,7 +26,9 @@ class AccountFragment : Fragment() {
     private var param2: String? = null
 
     private lateinit var binding : FragmentAccountBinding
-
+    //private lateinit var adapter :
+    private val settingNumberOfColumns = 4
+    private val manager = GridLayoutManager(requireContext(), settingNumberOfColumns)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +47,17 @@ class AccountFragment : Fragment() {
 
         return binding.root
     }
+
+    private fun setData() {
+
+    }
+
+    private fun initRecyclerView() {
+        setData()
+
+
+    }
+
 
     companion object {
         /**

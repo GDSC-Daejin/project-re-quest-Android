@@ -14,5 +14,5 @@ interface ApiService {
     fun addWrite(@Body data : LoginGoogleResponse) : Call<LoginResponsesData>
     /*@POST("/auth/google")
     fun addUserInfoData(@Body token: TokenRequest) : retrofit2.Call<LoginResponsesData>
-*/
+    */
 }
