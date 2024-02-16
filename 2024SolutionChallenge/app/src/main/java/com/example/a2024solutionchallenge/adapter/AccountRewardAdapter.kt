@@ -49,7 +49,7 @@ class AccountRewardAdapter : RecyclerView.Adapter<AccountRewardAdapter.ItemViewH
                     //exp 추가 이벤트
                     //캐릭터잠금해제
                 } else {
-                    Toast.makeText(context, "업적 조건이 완료되지 않았습니다.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Achievement requirements have not been completed.", Toast.LENGTH_SHORT).show()
                 }
             }
 

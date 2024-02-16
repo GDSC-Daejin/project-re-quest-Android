@@ -32,7 +32,7 @@ class QuestAdapter : RecyclerView.Adapter<QuestAdapter.ItemViewHolder>(){
                 if (itemData.complete == true) {
                     //exp 추가 이벤트
                 } else {
-                    Toast.makeText(context, "퀘스트 조건이 완료되지 않았습니다.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Quest conditions have not been completed.", Toast.LENGTH_SHORT).show()
                 }
             }
 

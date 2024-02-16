@@ -112,16 +112,9 @@ class LoginActivity : AppCompatActivity() {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
                 handleSignInResult(task)
 
-                if (userEmail.substring(9..20).toString() == "daejin.ac.kr") {
-                    Toast.makeText(this, "성공", Toast.LENGTH_SHORT).show()
-
-                    val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                    startActivity(intent)
-                    this@LoginActivity.finish()
-                } else {
-                    Toast.makeText(this, "대진대학교 학교 계정으로 로그인해주세요.", Toast.LENGTH_SHORT).show()
-                }
-
+                val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                startActivity(intent)
+                this@LoginActivity.finish()
             }
         }
     }

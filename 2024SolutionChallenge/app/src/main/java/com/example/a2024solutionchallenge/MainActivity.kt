@@ -135,7 +135,7 @@ class MainActivity : AppCompatActivity() {
 
             if (System.currentTimeMillis() > backPressedTime + 2000) {
                 backPressedTime = System.currentTimeMillis()
-                Toast.makeText(this@MainActivity, "뒤로 버튼을 한 번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@MainActivity, "\n" + "Press the back button one more time to exit.", Toast.LENGTH_SHORT).show()
                 return
             }
 
