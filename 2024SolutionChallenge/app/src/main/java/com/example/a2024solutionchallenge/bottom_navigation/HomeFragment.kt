@@ -1,15 +1,20 @@
 package com.example.a2024solutionchallenge.bottom_navigation
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.a2024solutionchallenge.R
 import com.example.a2024solutionchallenge.adapter.CommunityAdapter
 import com.example.a2024solutionchallenge.data.PostData
 import com.example.a2024solutionchallenge.databinding.FragmentHomeBinding
+import com.example.a2024solutionchallenge.pageforhome.EditActivity
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -46,6 +51,14 @@ class HomeFragment : Fragment() {
 
         initRecyclerView()
 
+        binding.homeAddBtn.setOnClickListener {
+            val intent = Intent(activity, EditActivity::class.java).apply {
+                putExtra("type", "ADD")
+            }
+            requestActivity.launch(intent)
+        }
+
+
         return binding.root
     }
 
@@ -66,6 +79,31 @@ class HomeFragment : Fragment() {
         /*mBinding.chattingRv.adapter = adapter
          mBinding.chattingRv.setHasFixedSize(true)
          mBinding.chattingRv.layoutManager = manager*/
+    }
+
+    private val requestActivity = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { it ->
+        when (it.resultCode) {
+            AppCompatActivity.RESULT_OK -> {
+                val postData = it.data?.getSerializableExtra("data") as PostData
+
+                val flag = it.data?.getIntExtra("flag", -1)
+                Log.d("TAG", "flag: $flag")
+
+                when(flag) {
+                    //add
+                    0 -> {
+                        setData()
+                    }
+                    1 -> {
+
+                    }
+                    4 -> {
+                    }
+
+                    //finish()
+                }
+            }
+        }
     }
 
 

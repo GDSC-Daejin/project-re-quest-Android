@@ -44,19 +44,18 @@ class AchievementsFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentAchievementsBinding.inflate(inflater, container, false)
 
-
-
+        initRecyclerView()
 
         return binding.root
     }
 
     private fun setData() {
-        /*itemList.add(practiceData("a", false))
-        itemList.add(practiceData("b", false))
-        itemList.add(practiceData("c", false))*/
+        itemList.add(AchievementData(false, "Create 1 community post", 10))
+        itemList.add(AchievementData(false, "Clear 1 Quest", 10))
+        itemList.add(AchievementData(false, "Go to volunteer activity page", 10))
     }
 
 
